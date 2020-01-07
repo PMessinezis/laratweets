@@ -1,0 +1,44 @@
+{
+	"name": "my Dev Environment",
+	"dockerFile": "Dockerfile",
+	"home": "/home/coder",
+	"workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=delegated",
+	"workspaceFolder": "/workspace",
+	"runArgs": [
+		"-u",
+		"coder",
+		"-v",
+		"${env:HOME}/.bash_aliases:/home/coder/.bash_aliases",
+		"-v",
+		"${env:HOME}/.bashrc:/home/coder/.bashrc",
+		"-v",
+		"${env:HOME}/.profile:/home/coder/.profile",
+		"-v",
+		"${env:HOME}/bin:/home/coder/bin",
+		"-v",
+		"${env:HOME}/.ssh:/home/coder/.ssh",
+		"-v",
+		"${env:HOME}/.gitconfig:/home/coder/.gitconfig",
+		"-h",
+		"vscodedev",
+		"--network",
+		"swdevnet"
+	],
+	// Use 'settings' to set *default* container specific settings.json values on container create. 
+	// You can edit these settings after create using File > Preferences > Settings > Remote.
+	"settings": {
+		"terminal.integrated.shell.linux": "/bin/bash"
+	},
+	// Uncomment the next line if you want to publish any ports.
+	"appPort": [
+		"0.0.0.0:8000:8000"
+	],
+	// Uncomment the next line to run commands after the container is created.
+	// "postCreateCommand": "uname -a",
+	// Add the IDs of extensions you want installed when the container is created in the array below.
+	"extensions": [
+		"octref.vetur",
+		"bmewburn.vscode-intelephense-client",
+		"mehedidracula.php-namespace-resolver"
+	]
+}
