@@ -15,9 +15,8 @@ Route::redirect('/', '/home');
 
 Route::get('login/{provider}', 'Auth\LoginController@redirectToProvider');
 Route::get('login/{provider}/callback', 'Auth\LoginController@handleProviderCallback');
-
-Auth::routes();
-
+Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::middleware(['auth'])->group(function () {
+    Route::post('logout', 'Auth\LoginController@logout')->name('logout');
     Route::get('/home', 'HomeController@index')->name('home');
 });
