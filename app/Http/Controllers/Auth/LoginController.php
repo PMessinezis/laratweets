@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\User;
+use Socialite;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Providers\RouteServiceProvider;
-use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
@@ -20,7 +22,7 @@ class LoginController extends Controller
     |
     */
 
-    use AuthenticatesUsers, Socialite;
+    use AuthenticatesUsers;
 
 
     /**
@@ -41,56 +43,44 @@ class LoginController extends Controller
     }
 
 
-    public function redirect($provider)
+    public function redirectToProvider($provider)
     {
         return Socialite::driver($provider)->redirect();
     }
 
-    public function callback($provider)
+    public function handleProviderCallback($provider)
     {
 
-        $getInfo = Socialite::driver($provider)->user();
-
-        $user = $this->createUser($getInfo, $provider);
-
-        auth()->login($user);
-
-        return redirect()->to('/home');
-    }
-
-    function createUser($getInfo, $provider)
-    {
-
-        $user = User::where('provider_id', $getInfo->id)->first();
-
-        if (!$user) {
-            $user = User::create([
-                'name'     => $getInfo->name,
-                'email'    => $getInfo->email,
-                'provider' => $provider,
-                'provider_id' => $getInfo->id
-            ]);
+        try {
+            $user = Socialite::driver($provider)->user();
+        } catch (Exception $e) {
+            return redirect('/login');
         }
-        return $user;
+
+        $authUser = $this->findOrCreateUser($user, $provider);
+        Auth::login($authUser, true);
+        return redirect($this->redirectTo);
     }
 
-    /**
-     * Redirect the user to the Twitter authentication page.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function redirectToTwitter()
-    {
-        return $this->redirect('twitter');
-    }
 
-    /**
-     * Obtain the user information from twitter.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function handleTwitterCallback()
+    public function findOrCreateUser($providerUser, $provider)
     {
-        return $this->callback('twitter');
+
+        $user = User::whereProvider($provider)->whereProviderId($providerUser->getId())->first();
+
+        if ($user) {
+            return $user;
+        } else {
+            $user = User::create([
+                'email' => $providerUser->getEmail(),
+                'name'  => $providerUser->getName(),
+                'provider' => $provider,
+                'provider_id'   => $providerUser->getId(),
+                'provider_token'   => $providerUser->token,
+                'provider_secret'   => $providerUser->tokenSecret,
+            ]);
+
+            return $user;
+        }
     }
 }
