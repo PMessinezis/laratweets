@@ -1,6 +1,16 @@
 Laratweets is a test app that uses Twitter OAuth authentication and subsequently displays authenticated user's twitter timeline.
 
-To install for dev git clone repository and then run :
+To install for dev and run 
+
+`git clone git@github.com:PMessinezis/laratweets.git` 
+
+If you have docker installed cd into app directory and run
+
+`./run.sh` 
+
+which builds the docker image and runs it, listening at http://localhost:8888 .
+
+If you don't have docker installed, then execute following steps :
 
 `composer install` 
 
