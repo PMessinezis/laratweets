@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\User;
 use Socialite;
+use App\AuditLog;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Providers\RouteServiceProvider;
@@ -30,7 +31,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.
@@ -52,13 +53,14 @@ class LoginController extends Controller
     {
 
         try {
-            $user = Socialite::driver($provider)->user();
+            $socialUser = Socialite::driver($provider)->user();
         } catch (Exception $e) {
+            AuditLog::log(AuditLog::ERROR, $e);
             return redirect('/login');
         }
-
-        $authUser = $this->findOrCreateUser($user, $provider);
-        Auth::login($authUser, true);
+        $appUser = $this->findOrCreateUser($socialUser, $provider);
+        AuditLog::log(AuditLog::USER_OAUTH_AUTHENTICATION, $appUser);
+        Auth::login($appUser, true);
         return redirect($this->redirectTo);
     }
 

@@ -11,12 +11,13 @@
 |
 */
 
-Route::redirect('/', '/home');
+Route::middleware(['auth'])->group(function () {
+    Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+    Route::get('/', 'HomeController@index')->name('home');
+    Route::get('/twitter/timeline', 'TwitterController@timeline');
+});
+
+Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 
 Route::get('login/{provider}', 'Auth\LoginController@redirectToProvider');
 Route::get('login/{provider}/callback', 'Auth\LoginController@handleProviderCallback');
-Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
-Route::middleware(['auth'])->group(function () {
-    Route::post('logout', 'Auth\LoginController@logout')->name('logout');
-    Route::get('/home', 'HomeController@index')->name('home');
-});

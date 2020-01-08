@@ -2,16 +2,8 @@
 
 namespace App;
 
-use GuzzleHttp\Client;
-use TwitterAPIExchange;
-use GuzzleHttp\HandlerStack;
-
-use GuzzleHttp\Subscriber\Oauth\Oauth1;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
-
 
 class User extends Authenticatable
 {
@@ -43,25 +35,4 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
-
-    public function tweets()
-    {
-
-
-
-        $oauth = [
-            'oauth_access_token'           => $this->provider_token,
-            'oauth_access_token_secret'    => $this->provider_secret,
-            'consumer_key'    => config('services.twitter.client_id'),
-            'consumer_secret' => config('services.twitter.client_secret'),
-        ];
-        $params = '?count=40';
-        $url = 'https://api.twitter.com/1.1/statuses/home_timeline.json';
-        $method = 'GET';
-        $twitter = new TwitterAPIExchange($oauth);
-        $res = $twitter->setGetfield($params)->buildOauth($url, $method)
-            ->performRequest();
-        return $res;
-    }
 }

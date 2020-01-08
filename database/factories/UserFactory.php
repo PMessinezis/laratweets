@@ -16,13 +16,15 @@ use Illuminate\Support\Str;
 | model instances for testing / seeding your application's database.
 |
 */
-
+// adapted for twitter authenticated user 
 $factory->define(User::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
-        'email_verified_at' => now(),
-        'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+        'provider' => 'twitter',
+        'provider_id' => $faker->randomNumber(),
+        'provider_token' => $faker->regexify('[A-Za-z0-9]{20}'),
+        'provider_secret' => $faker->regexify('[A-Za-z0-9]{32}'),
         'remember_token' => Str::random(10),
     ];
 });

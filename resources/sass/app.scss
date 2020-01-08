@@ -8,6 +8,46 @@
 @import '~bootstrap/scss/bootstrap';
 
 
-a.btn-twitter {
+.btn-social-icon {
+    margin: auto;
+    font-size: 3em;
+}
+
+.btn-twitter {
     color: rgb(29, 161, 242);
+}
+
+.titleWrapper{
+    display:inline-block;
+}
+
+.filterWrapper{
+    position:relative;
+    display:inline-block;
+}
+
+@media (max-width: 768px) {
+    .titleWrapper{
+        display:block;
+        margin:auto;
+        text-align: center;
+        font-size : 2em;
+
+    }
+    
+    .filterWrapper{
+        position:relative;
+        display:block;
+        margin:auto;
+        text-align: center;
+    }
+      
+}
+
+.fa-refresh:hover{
+    color: green;
+}
+
+[v-cloak] {
+    display: none
 }
