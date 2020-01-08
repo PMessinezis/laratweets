@@ -4,8 +4,10 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
+
+            <div v-cloak=true v-if='error' class='text-danger'> @{{ error }}</div>
+            @if ( Auth::user()->provider=='twitter')
             <div class="card">
-                @if ( Auth::user()->provider=='twitter')
                 <div class="card-header">
                     <div class='titleWrapper'>
                         <span> Latest Tweets </span>
@@ -19,13 +21,11 @@
                 </div>
 
                 <div class="card-body">
-                    <div v-cloak=true v-if='error' class='text-danger'> @{{ error }}</div>
-                    <div v-for='tweet in tweets'>
-                        <vtweet :tweet='tweet' :refreshTrigger='refreshCounter' />
-                    </div>
+                    <vtweet v-for='tweet in tweets' :tweet='tweet' />
                 </div>
-                @endif
             </div>
+            @endif
+
         </div>
     </div>
 </div>

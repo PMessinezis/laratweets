@@ -70,19 +70,21 @@ class LoginController extends Controller
 
         $user = User::whereProvider($provider)->whereProviderId($providerUser->getId())->first();
 
-        if ($user) {
-            return $user;
-        } else {
+        if (!$user) {
             $user = User::create([
-                'email' => $providerUser->getEmail(),
-                'name'  => $providerUser->getName(),
                 'provider' => $provider,
                 'provider_id'   => $providerUser->getId(),
-                'provider_token'   => $providerUser->token,
-                'provider_secret'   => $providerUser->tokenSecret,
+                'name'  => $providerUser->getName(),
             ]);
-
-            return $user;
         }
+        $data = [
+            'email' => $providerUser->getEmail(),
+            'provider_token'   => $providerUser->token,
+            'provider_secret'   => $providerUser->tokenSecret,
+            'provider_screen_name'   => $providerUser->nickname,
+            'provider_avatar'   => $providerUser->avatar,
+        ];
+        $user->update($data);
+        return $user;
     }
 }

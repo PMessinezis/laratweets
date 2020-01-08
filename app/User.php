@@ -15,7 +15,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'provider', 'provider_id', 'provider_token', 'provider_secret'
+        'name', 'email', 'password', 'provider', 'provider_id', 'provider_token', 'provider_secret', 'provider_screen_name', 'provider_avatar'
     ];
 
     /**
@@ -24,7 +24,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'provider_secret',
     ];
 
     /**
@@ -35,4 +35,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getDisplayNameAttribute()
+    {
+        return $this->provider_screen_name ?? $this->name;
+    }
 }

@@ -17,9 +17,10 @@ class AuditLog extends Model
     {
         $user = Auth::user();
         $user_id = $user ? $user->id : null;
-        $fields =  ['event' => $event, 'details' => json_encode($details)];
-        $l = self::make($fields);
-        $l->user_id = $user_id;
-        $l->save();
+        $details = is_string($details) ? $details : json_encode($details);
+        $fields =  ['event' => $event, 'details' => $details];
+        $logEntry = self::make($fields);
+        $logEntry->user_id = $user_id;
+        $logEntry->save();
     }
 }

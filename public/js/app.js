@@ -1864,6 +1864,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["tweet"],
   computed: {
@@ -6418,7 +6421,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.since[data-v-b020c774] {\n    font-size: 0.7em;\n}\n.wrapper[data-v-b020c774] {\n    padding: 15px;\n    margin: 15px 5px 0px 0px;\n    border-radius: 15px;\n    border: 1px solid gray;\n}\n", ""]);
+exports.push([module.i, "\n.since[data-v-b020c774] {\n    font-size: 0.7em;\n}\n.wrapper[data-v-b020c774] {\n    padding: 15px;\n    margin: 15px 5px 0px 0px;\n    border-radius: 15px;\n    border: 1px solid gray;\n}\n.wrapper[data-v-b020c774]:first-child {\n    padding: 15px;\n    margin: 0px 5px 0px 0px;\n    border-radius: 15px;\n    border: 1px solid gray;\n}\n.logo-wrapper[data-v-b020c774] {\n    display: inline;\n    width: 2em;\n    height: 2em;\n    position: relative;\n    overflow: hidden;\n    border-radius: 50%;\n}\n.logo-wrapper img[data-v-b020c774] {\n    -o-object-fit: cover;\n       object-fit: cover;\n    border-radius: 50%;\n    height: 2em;\n    width: 2em;\n    overflow: hidden;\n}\n", ""]);
 
 // exports
 
@@ -55519,6 +55522,10 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container wrapper" }, [
     _c("div", [
+      _c("div", { staticClass: "logo-wrapper" }, [
+        _c("img", { attrs: { src: _vm.tweet.user.profile_image_url } })
+      ]),
+      _vm._v(" "),
       _c("a", {
         staticStyle: { weight: "bold" },
         attrs: { href: "https://twitter.com/" + _vm.tweet.user.screen_name },
@@ -67725,38 +67732,16 @@ module.exports = function(module) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 window.moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
-// const files = require.context('./', true, /\.vue$/i)
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-
 Vue.component('vtweet', __webpack_require__(/*! ./components/vtweet.vue */ "./resources/js/components/vtweet.vue")["default"]);
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-
 var app = new Vue({
   el: '#app',
   data: {
     allTweets: [],
     filter: '',
-    refreshCounter: 0,
     interval: 0,
     error: ''
   },
@@ -67796,8 +67781,7 @@ var app = new Vue({
           _this.startRefresh();
         }
       })["catch"](function (error) {
-        console.log('error ', response.data);
-        me.error = error.message;
+        me.error = 'Failed to retrieve tweets';
         console.log(error);
       });
     }
