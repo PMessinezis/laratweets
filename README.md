@@ -1,4 +1,4 @@
-Laratweets is a test app using Twitter OAuth authentication and subsequently displays authenticated user's twitter timeline.
+Laratweets is a test app that uses Twitter OAuth authentication and subsequently displays authenticated user's twitter timeline.
 
 To install for dev git clone repository and then run :
 
