@@ -6,11 +6,20 @@ To install for dev and run
 
 `git clone git@github.com:PMessinezis/laratweets.git` 
 
-If you have docker installed cd into app directory and run
+If you have docker installed cd into app directory, update Twitter Consumer Api keys inside .env.dev (see also [Twitter API Setup](#twitter) below) and run
 
 `./run.sh` 
 
-which builds the docker image and runs it using an sqlite database inside the container, listening at http://localhost:8888 (see also [Twitter API Setup](#twitter) below).
+
+or use command line arguments to set the keys, e.g. :
+
+```
+./run.sh -e TWITTER_CONSUMER_API_KEY=BTcdkdh59IcCvj9qMVhX0c7fp \
+         -e TWITTER_CONSUMER_API_SECRET_KEY=YAQM6IbgMuJ7hJc8vEOV4vlfj48siHE5zTd8v5fO75sAnjj8Fq
+ ```
+
+
+which builds the docker image and runs it using an sqlite database inside the container, listening at http://localhost:8888 .
 
 If you just want to run it, you can use the public docker images :
 
@@ -21,7 +30,9 @@ If you want to overide default database engine, you can run it using `docker run
 
 Example run command : 
 
-`docker run --rm  --name laratweets --env-file env.mysql  --network devnet  -p 8000:8000  -d pmessinezis/laratweets:doctrine`
+```
+docker run --env-file env.mysql  --network devnet  -p 8000:8000  -d pmessinezis/laratweets:doctrine
+```
 
 and example env.mysql
 
