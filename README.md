@@ -49,7 +49,7 @@ APP_URL=http://localhost:8000
 TWITTER_OAUTH_CALLBACK=http://localhost:8000/login/twitter/callback
 ```
 
-The example implies that you have setup a docker network named `devnet` where a container with hostname `mysqlserver` provides a mysql server listening on port `3306`, and on this mysql server you have already created a database named `laratweets` and created a corresponding user `laratweets` with password `some_password`.
+The example implies that you have setup a docker network named `devnet` where a container with hostname `mysqlserver` provides a mysql server listening on port `3306`, and on that mysql server you have already created a database named `laratweets` and created a corresponding user `laratweets` with password `some_password`.
 
 Note that in order to override the web app listening port, you need to : 
 - set the `WEB_PORT` variable (it is used by the `docker-entrypoint.sh` script to fire `php artisan serve` on the requested port), 
