@@ -46,28 +46,31 @@ RUN apt-get -y install php${PHP_VER}-mysql mysql-client
 
 # SETUP WORKDIR
 RUN mkdir /workspace
+COPY . /workspace
 WORKDIR /workspace
-RUN chmod -R 777 /root 
-RUN chown -R $USERNAME /root
-RUN chmod -R 777 /workspace 
-RUN chown -R $USERNAME /workspace
+
+RUN for dir in composer.json \
+    vendor/. \
+    public/. \
+    storage/. \
+    bootstrap/. \
+    node_modules/. \
+    ; do \
+    echo /workspace/$dir && \
+    chmod -R 777 /workspace/$dir && \
+    chown -R $USERNAME:$USERNAME /workspace/$dir \
+    ; done
+
 
 USER $USERNAME:$USERNAME
-RUN sudo chown -R $USERNAME /workspace
-
-COPY . /workspace
-
-RUN sudo chmod -R 777 /workspace/public
-RUN sudo chmod -R 777 /workspace/storage
-RUN sudo chmod -R 777 /workspace/bootstrap/cache
 
 RUN composer install
 
-RUN npm install
+RUN npm install && npm run dev
 
-RUN npm run dev
-
-RUN cp .env.dev .env
+RUN sudo cp .env.dev .env
+RUN sudo chown -R $USERNAME:$USERNAME .env
+RUN sudo chmod -R 777 .env
 
 RUN php artisan key:generate
 
@@ -76,10 +79,6 @@ RUN sudo touch database/database.sqlite
 RUN sudo chown -R $USERNAME:$USERNAME database
 RUN sudo chmod -R 777 database
 
-RUN ls -la database
-
 RUN php artisan migrate
 
-EXPOSE 8888
-
-ENTRYPOINT ["bash" , "-c" , " php artisan serve --host=0.0.0.0 --port=8888"] 
+ENTRYPOINT ["bash" , "-c" , "/workspace/docker-entrypoint.sh"] 
