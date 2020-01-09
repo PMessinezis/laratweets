@@ -14,6 +14,7 @@
 Route::middleware(['auth'])->group(function () {
     Route::post('logout', 'Auth\LoginController@logout')->name('logout');
     Route::get('/', 'HomeController@index')->name('home');
+    Route::redirect('/home', '/');
     Route::get('/twitter/timeline', 'TwitterController@timeline');
 });
 
