@@ -1,4 +1,6 @@
 .git
 .dockerignore
 dockerfile
+vendor/*
+node_modules/*
 run.sh
