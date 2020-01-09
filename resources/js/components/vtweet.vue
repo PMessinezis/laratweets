@@ -17,11 +17,8 @@
         </div>
         <div>
             @{{ tweet.text }}
-            <span v-if="tweet.entities.urls.length">
-                <a
-                    :href="tweet.entities.urls[0].url"
-                    target="_blank"
-                >{{ tweet.entities.urls[0].display_url }}</a>
+            <span v-if="hasUrls">
+                <a :href="firstUrlTarget" target="_blank">{{ firstUrlDisplay }}</a>
             </span>
         </div>
     </div>
@@ -37,6 +34,22 @@ export default {
                 "dd MMM DD HH:mm:ss ZZ YYYY",
                 "en"
             ).fromNow();
+        },
+
+        hasUrls() {
+            return this.tweet.entities.urls.length;
+        },
+
+        firstUrl() {
+            return this.tweet.entities.urls[0];
+        },
+
+        firstUrlTarget() {
+            return this.firstUrl.url;
+        },
+
+        firstUrlDisplay() {
+            return this.firstUrl.display_url;
         }
     }
 };
@@ -46,6 +59,7 @@ export default {
 .since {
     font-size: 0.7em;
 }
+
 .wrapper {
     padding: 15px;
     margin: 15px 5px 0px 0px;

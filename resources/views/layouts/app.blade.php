@@ -55,7 +55,7 @@
                         @else
                         <li class="nav-item dropdown">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                <i class="fa fa-{{ Auth::user()->provider }}"></i> {{ Auth::user()->displayname }} <span class="caret"></span>
+                                <i class="fa fa-{{ Auth::user()->getProvider() }}"></i> {{ Auth::user()->getDisplayname() }} <span class="caret"></span>
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">

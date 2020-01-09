@@ -2,12 +2,13 @@
 
 namespace Tests\Feature;
 
+use Auth;
 use Mockery;
 use App\AuditLog;
 use Tests\TestCase;
-use Illuminate\Support\Facades\Auth;
-use Laravel\Socialite\Facades\Socialite;
+use Socialite;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+
 
 class SocialLoginTest extends TestCase
 
@@ -50,7 +51,7 @@ class SocialLoginTest extends TestCase
 
         // check redirected to / and logged in with my mocked user
         $response->assertRedirect('/');
-        $this->assertEquals('My Name', Auth::user()->name);
+        $this->assertEquals('My Name', Auth::user()->getName());
 
         // check / displays user name 
         $response = $this->get('/');
@@ -74,9 +75,9 @@ class SocialLoginTest extends TestCase
         $response = $this->get('/login/twitter/callback');
 
         // check login action logged 
-        $auditLog = AuditLog::first();
-        $this->assertEquals(AuditLog::USER_OAUTH_AUTHENTICATION, $auditLog->event);
-        $this->assertStringContainsString('My Name', $auditLog->details);
-        $this->assertStringContainsString('12345678', $auditLog->details);
+        $auditLog = AuditLog::all()->first();
+        $this->assertEquals(AuditLog::USER_OAUTH_AUTHENTICATION, $auditLog->getEvent());
+        $this->assertStringContainsString('My Name', $auditLog->getDetails());
+        $this->assertStringContainsString('12345678', $auditLog->getDetails());
     }
 }

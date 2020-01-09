@@ -1864,14 +1864,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["tweet"],
   computed: {
     since: function since() {
       return moment(this.tweet.created_at, "dd MMM DD HH:mm:ss ZZ YYYY", "en").fromNow();
+    },
+    hasUrls: function hasUrls() {
+      return this.tweet.entities.urls.length;
+    },
+    firstUrl: function firstUrl() {
+      return this.tweet.entities.urls[0];
+    },
+    firstUrlTarget: function firstUrlTarget() {
+      return this.firstUrl.url;
+    },
+    firstUrlDisplay: function firstUrlDisplay() {
+      return this.firstUrl.display_url;
     }
   }
 });
@@ -55544,18 +55553,11 @@ var render = function() {
     _vm._v(" "),
     _c("div", [
       _vm._v("\n        @" + _vm._s(_vm.tweet.text) + "\n        "),
-      _vm.tweet.entities.urls.length
+      _vm.hasUrls
         ? _c("span", [
-            _c(
-              "a",
-              {
-                attrs: {
-                  href: _vm.tweet.entities.urls[0].url,
-                  target: "_blank"
-                }
-              },
-              [_vm._v(_vm._s(_vm.tweet.entities.urls[0].display_url))]
-            )
+            _c("a", { attrs: { href: _vm.firstUrlTarget, target: "_blank" } }, [
+              _vm._v(_vm._s(_vm.firstUrlDisplay))
+            ])
           ])
         : _vm._e()
     ])
@@ -67766,17 +67768,42 @@ var app = new Vue({
     startRefresh: function startRefresh() {
       this.interval = setInterval(this.loadTweets, 180000);
     },
+    newestTweet: function newestTweet() {
+      if (!this.allTweets.length) {
+        return null;
+      }
+
+      return this.allTweets.reduce(function (tweetA, tweetB) {
+        return tweetA.id > tweetB.id ? tweetA : tweetB;
+      });
+    },
     loadTweets: function loadTweets() {
       var _this = this;
 
       var me = this;
       this.stopRefresh();
-      axios.get('/twitter/timeline').then(function (response) {
+      var params = {};
+      var newestTweet = this.newestTweet();
+
+      if (newestTweet) {
+        params = {
+          since_id: newestTweet.id
+        };
+      }
+
+      axios.get('/twitter/timeline', {
+        params: params
+      }).then(function (response) {
         if (response.data.errors) {
           me.error = response.data.errors[0].message;
         } else {
           me.error = '';
-          me.allTweets = response.data;
+
+          if (newestTweet) {
+            me.allTweets = response.data.concat(me.allTweets);
+          } else {
+            me.allTweets = response.data;
+          }
 
           _this.startRefresh();
         }

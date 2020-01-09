@@ -44,16 +44,32 @@ const app = new Vue({
             this.interval = setInterval(this.loadTweets, 180000);
         },
 
+        newestTweet() {
+            if (!this.allTweets.length) {
+                return null
+            }
+            return this.allTweets.reduce((tweetA, tweetB) => (tweetA.id > tweetB.id ? tweetA : tweetB))
+        },
+
         loadTweets() {
             var me = this
             this.stopRefresh();
-            axios.get('/twitter/timeline')
+            var params = {};
+            var newestTweet = this.newestTweet();
+            if (newestTweet) {
+                params = { since_id: newestTweet.id }
+            }
+            axios.get('/twitter/timeline', { params: params })
                 .then(response => {
                     if (response.data.errors) {
                         me.error = response.data.errors[0].message;
                     } else {
                         me.error = '';
-                        me.allTweets = response.data
+                        if (newestTweet) {
+                            me.allTweets = response.data.concat(me.allTweets)
+                        } else {
+                            me.allTweets = response.data
+                        }
                         this.startRefresh();
                     }
                 })

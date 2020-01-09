@@ -7,7 +7,7 @@ use Socialite;
 use App\AuditLog;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Providers\RouteServiceProvider;
+use LaravelDoctrine\ORM\Facades\EntityManager;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
@@ -44,6 +44,9 @@ class LoginController extends Controller
     }
 
 
+    /**
+     * Redirect to social site oAuth url 
+     */
     public function redirectToProvider($provider)
     {
         return Socialite::driver($provider)->redirect();
@@ -68,23 +71,22 @@ class LoginController extends Controller
     public function findOrCreateUser($providerUser, $provider)
     {
 
-        $user = User::whereProvider($provider)->whereProviderId($providerUser->getId())->first();
+        $q =  EntityManager::createQuery("Select u from App\User u where u.provider ='$provider' and u.provider_id = " . $providerUser->getId());
+        $users = $q->getResult();
+        $user = $users[0] ?? null;
 
         if (!$user) {
-            $user = User::create([
-                'provider' => $provider,
-                'provider_id'   => $providerUser->getId(),
-                'name'  => $providerUser->getName(),
-            ]);
+            $user = new User;
+            $user->setProvider($provider);
+            $user->setProviderId($providerUser->getId());
+            $user->setName($providerUser->getName());
         }
-        $data = [
-            'email' => $providerUser->getEmail(),
-            'provider_token'   => $providerUser->token,
-            'provider_secret'   => $providerUser->tokenSecret,
-            'provider_screen_name'   => $providerUser->nickname,
-            'provider_avatar'   => $providerUser->avatar,
-        ];
-        $user->update($data);
+        $user->setEmail($providerUser->getEmail());
+        $user->setProviderToken($providerUser->token);
+        $user->setProviderSecret($providerUser->tokenSecret);
+        $user->setProviderScreenName($providerUser->nickname);
+        $user->setProviderAvatar($providerUser->avatar);
+        $user->save();
         return $user;
     }
 }

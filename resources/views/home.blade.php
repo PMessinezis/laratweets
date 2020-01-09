@@ -6,7 +6,7 @@
         <div class="col-md-8">
 
             <div v-cloak=true v-if='error' class='text-danger'> @{{ error }}</div>
-            @if ( Auth::user()->provider=='twitter')
+            @if ( Auth::user()->getProvider()=='twitter')
             <div class="card">
                 <div class="card-header">
                     <div class='titleWrapper'>
