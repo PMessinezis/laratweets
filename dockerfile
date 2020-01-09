@@ -48,7 +48,8 @@ RUN apt-get -y install php${PHP_VER}-mysql mysql-client
 RUN mkdir /workspace
 COPY . /workspace
 WORKDIR /workspace
-
+RUN mkdir /workspace/vendor
+RUN mkdir /workspace/node_modules
 RUN for dir in composer.json \
     vendor/. \
     public/. \
